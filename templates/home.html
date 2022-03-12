@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Vision</title>
+    <link rel="stylesheet" href="../static/basichome.css">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='basichome.css') }}"> -->
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="Nav">
+           <ul>
+<!--               <li><img src="../public/traffic-lights.ico"></li>-->
+               <li><img src={{url_for('static',filename='traffic-lights.ico')}}></li>
+               <li><a href="{{ url_for('home') }}">Home</a></li>
+               <li><a href="{{ url_for('upload') }}">Upload</a></li>
+               <li><a href="{{ url_for('videos') }}">Videos</a></li>
+               <li><a href="{{ url_for('analysis') }}">Analysis</a></li>
+           </ul>
+        </nav>
+    <div class="sideways">
+        <video width="50%" height="400px" muted autoplay loop>
+<!--        <source src="../carDetect/test3.mp4" type="video/mp4">-->
+        <source src={{url_for('static',filename='test3.mp4')}} type="video/mp4">
+        </video>
+        <div id="piechart"></div>
+    </div>
+    </div>
+</body>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      let data = google.visualization.arrayToDataTable([
+      ['Current Working', 'Count'],
+      ['Working', 2000],
+      ['Maintenance', 100],
+      ['Not working', 20],
+      ['Upcoming units', 300]
+    ]);
+
+      let options = { "title":"Traffic Vision Services",'width':600, 'height':500};
+
+      let chart = new google.visualization.PieChart(document.getElementById('piechart'));
+      chart.draw(data, options);
+    }
+    </script>
+</html>
