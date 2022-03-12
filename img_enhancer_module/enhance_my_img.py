@@ -1,10 +1,12 @@
 import cv2 as cv
+from cv2 import waitKey
 import numpy as np
 import PIL
 from PIL import Image,ImageFilter
 import numpy
 filters=[]
 params=[]
+backRmapi='yMp43NNBqnCosi67pj5y87F5'
 w,h=200,300
 pt2=np.float32([[0,0],[w,0],[0,h],[w,h]])
 pt1=[]
@@ -94,14 +96,17 @@ def wrapContent(img,pt1):
 def cropImg(img,pt1,pt2):
     return img[pt1[0]:pt2[0],pt1[1]:pt2[1]]
 
-def filter1(img,filter):
-    imt1=Image.fromarray(img)
-    imt1.show()
-    imt2=imt1.filter(filter=filter)
-    imt2.show()
-
 PILFilters=[ImageFilter.UnsharpMask(100),ImageFilter.SMOOTH
     ,ImageFilter.DETAIL]
+def filter1(img,filter):
+    imt1=Image.fromarray(img)
+    imt2=imt1.filter(filter=PILFilters[filter])
+    open_cv_image = numpy.array(imt2) 
+    # Convert RGB to BGR 
+    open_cv_image = open_cv_image[:, :, ::-1].copy()
+    return open_cv_image
+
+
 # filter1(cv.cvtColor(img2,cv.COLOR_RGB2BGR))
 # cv.imshow('crop',cropImg(img2,(0,0),(200,200)))
 def Pixalete(img,size=16):
@@ -120,11 +125,61 @@ def AutoEnhance(img):
     imt2 = imt1.filter(filter=ImageFilter.SMOOTH)
     imt3=imt2.filter(ImageFilter.SHARPEN)
     imt4=imt3.filter(ImageFilter.UnsharpMask)
+    imt5=imt4.filter(filter=ImageFilter.UnsharpMask(10))
+    imt5.show()
+def removeBack(imgLoc):
+    import requests
 
-    imt3.show('imt3')
-    imt4.show('imt4')
-    imt2.show('imt2')
-# AutoEnhance(cv.cvtColor(img2,cv.COLOR_RGB2BGR))
+    response = requests.post(
+        'https://api.remove.bg/v1.0/removebg',
+        files={'image_file': open(imgLoc, 'rb')},
+        data={'size': 'auto'},
+        headers={'X-Api-Key': backRmapi},
+    )
+    if response.status_code == requests.codes.ok:
+        with open('no-bg.png', 'wb') as out:
+            out.write(response.content)
+    else:
+        print("Error:", response.status_code, response.text)
+def mergeWithFilter(imgFore,imgBack):
+    if(len(imgBack.shape)<3):
+        imgBack=cv.merge((imgBack,imgBack,imgBack))
+    x,y,_=imgBack.shape
+    imgF=cv.resize(imgFore,(y,x))
+    added_image = cv.addWeighted(imgBack,0.3,imgF,1,0)
+
+    return added_image
+def HBFilter(imgURL,filteredIMG):
+    import requests
+
+    response = requests.post(
+        'https://api.remove.bg/v1.0/removebg',
+        files={'image_file': open(imgURL, 'rb')},
+        data={'size': 'auto'},
+        headers={'X-Api-Key': backRmapi},
+    )
+    if response.status_code == requests.codes.ok:
+        with open('no-bg.png', 'wb') as out:
+            out.write(response.content)
+            imf=cv.imread('no-bg.png')
+            mergeWithFilter(imf,filteredIMG)
+    else:
+        print("Error:", response.status_code, response.text)
+
+
+if __name__=="__main__":
+    img2=cv.imread(r'C:\Users\Pradhyuman Pandey\Downloads\LOC\LOC4.0_Dynamic-Developers\img_enhancer_module\test.jpeg')
+    cv.imshow('t',img2)
+    cv.waitKey()
+    imb=defFilters(img2,0)
+    imf=cv.imread(r'C:\Users\Pradhyuman Pandey\Downloads\LOC\LOC4.0_Dynamic-Developers\no-bg.png')
+    img3=mergeWithFilter(imf,imb)
+    cv.imshow('t',img3)
+    cv.waitKey()
+
+    # removeBack(r'C:\Users\Pradhyuman Pandey\Downloads\LOC\LOC4.0_Dynamic-Developers\img_enhancer_module\test.jpeg')
+    # AutoEnhance(cv.cvtColor(img2,cv.COLOR_RGB2BGR))
+
 # Pixalete(img2)
 # Pixalete(cv.cvtColor(img2,cv.COLOR_RGB2BGR))
 

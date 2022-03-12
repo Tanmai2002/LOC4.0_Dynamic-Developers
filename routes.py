@@ -3,6 +3,7 @@ from multiprocessing.connection import wait
 from werkzeug.utils import secure_filename
 import img_enhancer_module.enhance_my_img as enhanceImg
 import cv2.cv2 as cv
+from func import removeBack
 # from werkzeug.datastructures import  FileStorage
 import os
 import secrets
@@ -65,15 +66,48 @@ def analysis():
     return render_template('Analysis.html', test1=g1,test2=g1,test3=g2,test4=g2)
     # return render_template('analysis.html', title='Analysis')
 
-
 @app.route('/')
 @app.route('/filterA', methods=['GET','POST'])
 def filterA():
     if request.method == 'POST':
+        
         img=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'))
-        # cv.imshow("test",img)
-        cv.waitKey()
-        img2=enhanceImg.Pixalete(cv.cvtColor(img,cv.COLOR_BGR2RGB))
+        img2=img.copy()
+        if 'filterPix' in request.form:
+            img2=enhanceImg.Pixalete(cv.cvtColor(img,cv.COLOR_BGR2RGB))
+        if 'filterRemoveB' in request.form:
+            img2=enhanceImg.plainRGB(img,0)
+        if 'filterRemoveR' in request.form:
+            img2=enhanceImg.plainRGB(img,1)
+        if 'filterRemoveG' in request.form:
+            img2=enhanceImg.plainRGB(img,2)
+        if 'filterUnsharpMask' in request.form:
+            img2=enhanceImg.filter1(cv.cvtColor(img,cv.COLOR_BGR2RGB),0)
+        if 'filterSMOOTH' in request.form:
+            img2=enhanceImg.filter1(cv.cvtColor(img,cv.COLOR_BGR2RGB),1)
+        if 'filterDETAIL' in request.form:
+            img2=enhanceImg.filter1(cv.cvtColor(img,cv.COLOR_BGR2RGB),2)
+        
+        if 'XfilterPix' in request.form:
+            img2=enhanceImg.Pixalete(cv.cvtColor(img,cv.COLOR_BGR2RGB))
+            removeBack(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'),os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            imt=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            img2=enhanceImg.mergeWithFilter(imt,img2)
+        
+        if 'XfilterRemoveB' in request.form:
+            img2=enhanceImg.plainRGB(img,0)
+            removeBack(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'),os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            imt=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            img2=enhanceImg.mergeWithFilter(imt,img2)
+        
+        if 'XfilterRemoveR' in request.form:
+            img2=enhanceImg.plainRGB(img,1)
+            removeBack(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'),os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            imt=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            img2=enhanceImg.mergeWithFilter(imt,img2)
+        
+        
         cv.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'test1.jpg'),img2)
         
         return render_template('videos.html', title='Home',test1='images/test1.jpg')
+
