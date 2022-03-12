@@ -1,5 +1,8 @@
 from genericpath import exists
+from multiprocessing.connection import wait
 from werkzeug.utils import secure_filename
+import img_enhancer_module.enhance_my_img as enhanceImg
+import cv2.cv2 as cv
 # from werkzeug.datastructures import  FileStorage
 import os
 import secrets
@@ -40,9 +43,9 @@ def upload():
     if request.method == 'POST':
         i=0
         for f in request.files.getlist('file_name'):
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], f'test{i}.jpg'))
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], f'test0.jpg'))
             # detect.getmarkedVideo(os.path.join(app.config['UPLOAD_FOLDER'], f'test{i}.mp4'))
-        return render_template('videos.html', title='Video')
+        return render_template('videos.html', title='Video',test1='images/test0.jpg')
         # return render_template('upload.html', msg="File(s) have been uploaded successfully")
     return render_template('upload.html', title='upload',form=form, msg="Please Choose files")
 
@@ -51,7 +54,7 @@ def upload():
 @app.route('/videos', methods=['GET','POST'])
 @app.route('/videos')
 def videos():
-    return render_template('videos.html', title='Home')
+    return render_template('videos.html', title='Home',test1='images/test0.jpg')
 
 
 @app.route('/')
@@ -61,3 +64,16 @@ def analysis():
     g2='g2'
     return render_template('Analysis.html', test1=g1,test2=g1,test3=g2,test4=g2)
     # return render_template('analysis.html', title='Analysis')
+
+
+@app.route('/')
+@app.route('/filterA', methods=['GET','POST'])
+def filterA():
+    if request.method == 'POST':
+        img=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'))
+        # cv.imshow("test",img)
+        cv.waitKey()
+        img2=enhanceImg.Pixalete(cv.cvtColor(img,cv.COLOR_BGR2RGB))
+        cv.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'test1.jpg'),img2)
+        
+        return render_template('videos.html', title='Home',test1='images/test1.jpg')

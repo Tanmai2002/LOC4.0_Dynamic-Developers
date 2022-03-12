@@ -2,14 +2,13 @@ import cv2 as cv
 import numpy as np
 import PIL
 from PIL import Image,ImageFilter
+import numpy
 filters=[]
 params=[]
 w,h=200,300
 pt2=np.float32([[0,0],[w,0],[0,h],[w,h]])
 pt1=[]
-img=cv.imread('test.jpeg')
-cv.namedWindow('params')
-img2=img.copy()
+
 def val(x):
     return x
 
@@ -40,25 +39,25 @@ def blurImga(imgi,pt1,pt2,size):
     imt.paste(blur,(pt1[0],pt1[1],pt2[0],pt2[1]))
     imt.show()
     return imgi
-def addpoint(event,x,y,flag,params):
-    global pt1
-    if event==cv.EVENT_LBUTTONDOWN:
-        pt1.append([x,y])
-        cv.circle(img,(x,y),2,(255,0,0),thickness=-1)
-        cv.imshow('Image',img2)
-        if len(pt1)==2:
-            blurImga(img2.copy(),pt1[0],pt1[1],5)
-            pt1=[]
-        print(pt1)
-    elif event== cv.EVENT_MOUSEMOVE:
-        if len(pt1)==1:
-            imgt=img2.copy()
-            cv.rectangle(imgt,pt1[0],(x,y),(255,0,0),thickness=1)
-            cv.imshow('Image',imgt)
-def __blurImg(img):
-    cv.imshow("Image", img)
-    cv.setMouseCallback('Image', addpoint)
-    cv.waitKey(0)
+# def addpoint(event,x,y,flag,params):
+#     global pt1
+#     if event==cv.EVENT_LBUTTONDOWN:
+#         pt1.append([x,y])
+#         cv.circle(img,(x,y),2,(255,0,0),thickness=-1)
+#         cv.imshow('Image',img2)
+#         if len(pt1)==2:
+#             blurImga(img2.copy(),pt1[0],pt1[1],5)
+#             pt1=[]
+#         print(pt1)
+#     elif event== cv.EVENT_MOUSEMOVE:
+#         if len(pt1)==1:
+#             imgt=img2.copy()
+#             cv.rectangle(imgt,pt1[0],(x,y),(255,0,0),thickness=1)
+#             cv.imshow('Image',imgt)
+# def __blurImg(img):
+#     cv.imshow("Image", img)
+#     cv.setMouseCallback('Image', addpoint)
+#     cv.waitKey(0)
 
 # __blurImg(img)
 
@@ -109,7 +108,12 @@ def Pixalete(img,size=16):
     imt=Image.fromarray(img)
     small=imt.resize((size,size),resample=Image.BILINEAR)
     res=small.resize(imt.size,Image.NEAREST)
-    res.show()
+    # res.show()
+    # res.save('../static/images/test1.jpg')
+    open_cv_image = numpy.array(res) 
+    # Convert RGB to BGR 
+    open_cv_image = open_cv_image[:, :, ::-1].copy() 
+    return open_cv_image
 def AutoEnhance(img):
     imt1 = Image.fromarray(img)
     imt1.show()
@@ -121,8 +125,8 @@ def AutoEnhance(img):
     imt4.show('imt4')
     imt2.show('imt2')
 # AutoEnhance(cv.cvtColor(img2,cv.COLOR_RGB2BGR))
-Pixalete(img2)
-Pixalete(cv.cvtColor(img2,cv.COLOR_RGB2BGR))
+# Pixalete(img2)
+# Pixalete(cv.cvtColor(img2,cv.COLOR_RGB2BGR))
 
 
 # cv.waitKey()

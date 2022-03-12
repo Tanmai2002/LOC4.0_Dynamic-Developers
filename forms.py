@@ -8,3 +8,5 @@ class VideoForm(FlaskForm):
     video_1 = FileField('Upload video 1', validators=[DataRequired(),FileAllowed(['svg','jpg','jpeg','png'])])
 
     submit = SubmitField('Upload')
+class FilterForm(FlaskForm):
+    submit=SubmitField('Filter')
