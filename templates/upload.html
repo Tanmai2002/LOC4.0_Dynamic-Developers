@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    
+    <link rel="stylesheet" href="../static/basichome.css">
+    <style>
+        .zyro{
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            margin: 10px;
+            justify-content: center;
+            align-items: center;
+            background-color: greenyellow;
+            border-radius: 25px;
+        }
+        input{
+            background: rgb(140, 207, 39);
+            font-size: larger;
+            padding: 10px 10px;
+            margin: 10px;
+            border-radius: 20px;
+        }
+
+        input.btn{
+            
+            background: rgb(0, 233, 233);
+            padding: 10px;
+            width: 100px;
+            border-radius: 20px;
+        }
+        input.btn:hover{
+            cursor: pointer;
+            background: cyan;
+            padding: 10px;
+            width: 100px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="Nav">
+            <ul>
+ <!--               <li><img src="../public/traffic-lights.ico"></li>-->
+                <li><img src={{url_for('static',filename='traffic-lights.ico')}}></li>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('upload') }}">Upload</a></li>
+                <li><a href="{{ url_for('videos') }}">Videos</a></li>
+                <li><a href="{{ url_for('analysis') }}">Analysis</a></li>
+            </ul>
+         </nav>
+    <div class="zyro">
+           <h2>{{msg}}</h2>
+    <br>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file_name" multiple accept="image/*">
+        <input class="btn" type="submit" value="Submit">
+    </form>
+    </div>
+</div>
+ 
+</body>
+</html>
