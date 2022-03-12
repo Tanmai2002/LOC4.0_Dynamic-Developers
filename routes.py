@@ -106,6 +106,29 @@ def filterA():
             imt=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
             img2=enhanceImg.mergeWithFilter(imt,img2)
         
+        if 'XfilterRemoveG' in request.form:
+            img2=enhanceImg.plainRGB(img,2)
+            removeBack(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'),os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            imt=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            img2=enhanceImg.mergeWithFilter(imt,img2)
+        
+        if 'XfilterUnsharpMask' in request.form:
+            img2=enhanceImg.filter1(cv.cvtColor(img,cv.COLOR_BGR2RGB),0)
+            removeBack(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'),os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            imt=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            img2=enhanceImg.mergeWithFilter(imt,img2)
+        
+        if 'XfilterSMOOTH' in request.form:
+            img2=enhanceImg.filter1(cv.cvtColor(img,cv.COLOR_BGR2RGB),1)
+            removeBack(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'),os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            imt=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            img2=enhanceImg.mergeWithFilter(imt,img2)
+
+        if 'XfilterNEG' in request.form:
+            img2=enhanceImg.defFilters(img,1)
+            removeBack(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'),os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            imt=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            img2=enhanceImg.mergeWithFilter(imt,img2)
         
         cv.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'test1.jpg'),img2)
         
