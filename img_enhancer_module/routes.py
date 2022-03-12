@@ -13,7 +13,7 @@ app.config['SECRET_KEY'] = '15de991f5f224a1d524d408efc1753ac'
 # if not os.path.isdir(UPLOAD_FOLDER):
 #     os.mkdir(UPLOAD_FOLDER)
 
-app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/images')
+app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static\images')
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'svg'}
 
@@ -40,7 +40,7 @@ def upload():
     if request.method == 'POST':
         i=0
         for f in request.files.getlist('file_name'):
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], f'test{i}.mp4'))
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], f'test{i}.jpg'))
             # detect.getmarkedVideo(os.path.join(app.config['UPLOAD_FOLDER'], f'test{i}.mp4'))
         return render_template('videos.html', title='Video')
         # return render_template('upload.html', msg="File(s) have been uploaded successfully")
