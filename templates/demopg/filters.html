@@ -136,8 +136,10 @@
       autoplayHoverPause: true,
     });
   </script>
-  <a class="btn btn-primary" href="#" role="button">Next</a>
-  <a class="btn btn-primary" href="#" role="button">Download</a>
+  <form action="/saveAndMove"  method="post" enctype="multipart/form-data">
+  <input type='submit'class="btn btn-primary" href="#" role="button" value="Next">
+  <a class="btn btn-primary" href="{{ url_for('static', filename='images/test1.jpg') }}" download='output.png'role="button">Download</a>
+</form>
 </body>
 
 </html>

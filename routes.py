@@ -64,6 +64,17 @@ def filters():
 def features():
     return render_template('features.html', title='Features',test1='images/test0.jpg')
 
+
+@app.route('/')
+@app.route('/saveAndMove', methods=['GET','POST'])
+@app.route('/saveAndMove')
+def saveAndMove():
+    
+    return render_template('features.html', title='Features',test1='images/test0.jpg')
+
+
+
+
 @app.route('/')
 @app.route('/analysis')
 def analysis():
