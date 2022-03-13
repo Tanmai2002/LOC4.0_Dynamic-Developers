@@ -1,0 +1,27 @@
+/** @format */
+
+body {
+	text-align: center;
+	color: white;
+}
+.main {
+	width: 100vw;
+	display: flex;
+}
+.range_panel {
+	background-color: rgb(39, 39, 39);
+	width: 300px;
+	height: 100vh;
+	padding: 30px;
+	padding-top: 100px;
+}
+span {
+	display: block;
+	margin: 10px;
+}
+.image {
+	padding: 100px;
+}
+.image img {
+	width: 30vw;
+}

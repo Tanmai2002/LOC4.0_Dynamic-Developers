@@ -3,7 +3,7 @@ from multiprocessing.connection import wait
 from werkzeug.utils import secure_filename
 import img_enhancer_module.enhance_my_img as enhanceImg
 import cv2.cv2 as cv
-from func import removeBack
+from func import removeBack,bw2color
 # from werkzeug.datastructures import  FileStorage
 import os
 import secrets
@@ -24,10 +24,10 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'svg'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/')
-@app.route('/home')
-def home():
-    return render_template('home.html', title='Home')
+# @app.route('/')
+# @app.route('/home')
+# def home():
+#     return render_template('home.html', title='Home')
 
 # def save_video(form_video):
 #     random_hex = secrets.token_hex(8)
@@ -46,17 +46,23 @@ def upload():
         for f in request.files.getlist('file_name'):
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], f'test0.jpg'))
             # detect.getmarkedVideo(os.path.join(app.config['UPLOAD_FOLDER'], f'test{i}.mp4'))
-        return render_template('videos.html', title='Video',test1='images/test0.jpg')
+        # return render_template('videos.html', title='Video',test1='images/test0.jpg')
+        return render_template('demopg/Effects.html', title='Effects',test1='images/test0.jpg')
         # return render_template('upload.html', msg="File(s) have been uploaded successfully")
     return render_template('upload.html', title='upload',form=form, msg="Please Choose files")
 
-#
-@app.route('/')
-@app.route('/videos', methods=['GET','POST'])
-@app.route('/videos')
-def videos():
-    return render_template('videos.html', title='Home',test1='images/test0.jpg')
 
+@app.route('/')
+@app.route('/filters', methods=['GET','POST'])
+@app.route('/filters')
+def filters():
+    return render_template('demopg/filters.html', title='Filters',test1='images/test0.jpg')
+
+@app.route('/')
+@app.route('/features', methods=['GET','POST'])
+@app.route('/features')
+def features():
+    return render_template('features.html', title='Features',test1='images/test0.jpg')
 
 @app.route('/')
 @app.route('/analysis')
@@ -87,6 +93,21 @@ def filterA():
             img2=enhanceImg.filter1(cv.cvtColor(img,cv.COLOR_BGR2RGB),1)
         if 'filterDETAIL' in request.form:
             img2=enhanceImg.filter1(cv.cvtColor(img,cv.COLOR_BGR2RGB),2)
+        
+        cv.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'test1.jpg'),img2)
+        
+        return render_template('demopg/filters.html', title='Home',test1='images/test1.jpg')
+
+
+
+
+@app.route('/')
+@app.route('/featuresA', methods=['GET','POST'])
+def featuresA():
+    if request.method == 'POST':
+        
+        img=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'))
+        img2=img.copy()
         
         if 'XfilterPix' in request.form:
             img2=enhanceImg.Pixalete(cv.cvtColor(img,cv.COLOR_BGR2RGB))
@@ -129,8 +150,17 @@ def filterA():
             removeBack(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'),os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
             imt=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
             img2=enhanceImg.mergeWithFilter(imt,img2)
-        
+        if 'BgRemove' in request.form:
+            removeBack(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'),os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            img2=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back.png'))
+            cv.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'test2.png'),img2)
+            return render_template('features.html', title='Features',test1='images/test2.png')
+        if 'BW2C' in request.form:
+            bw2color(os.path.join(app.config['UPLOAD_FOLDER'], 'test0.jpg'),os.path.join(app.config['UPLOAD_FOLDER'], 'no-back1.png'))
+            imt=cv.imread(os.path.join(app.config['UPLOAD_FOLDER'], 'no-back1.png'))
+            img2=enhanceImg.mergeWithFilter(imt,img2)
         cv.imwrite(os.path.join(app.config['UPLOAD_FOLDER'], 'test1.jpg'),img2)
         
-        return render_template('videos.html', title='Home',test1='images/test1.jpg')
+        return render_template('features.html', title='Features',test1='images/test1.jpg')
+
 
