@@ -127,9 +127,8 @@ def AutoEnhance(img):
     imt4=imt3.filter(ImageFilter.UnsharpMask)
     imt5=imt4.filter(filter=ImageFilter.UnsharpMask(10))
     imt5.show()
-def removeBack(imgLoc):
+def removeBack(imgLoc,path):
     import requests
-
     response = requests.post(
         'https://api.remove.bg/v1.0/removebg',
         files={'image_file': open(imgLoc, 'rb')},
@@ -137,7 +136,7 @@ def removeBack(imgLoc):
         headers={'X-Api-Key': backRmapi},
     )
     if response.status_code == requests.codes.ok:
-        with open('no-bg.png', 'wb') as out:
+        with open(path, 'wb') as out:
             out.write(response.content)
     else:
         print("Error:", response.status_code, response.text)
@@ -168,14 +167,13 @@ def HBFilter(imgURL,filteredIMG):
 
 
 if __name__=="__main__":
-    img2=cv.imread(r'C:\Users\Pradhyuman Pandey\Downloads\LOC\LOC4.0_Dynamic-Developers\img_enhancer_module\test.jpeg')
-    cv.imshow('t',img2)
-    cv.waitKey()
-    imb=defFilters(img2,0)
-    imf=cv.imread(r'C:\Users\Pradhyuman Pandey\Downloads\LOC\LOC4.0_Dynamic-Developers\no-bg.png')
-    img3=mergeWithFilter(imf,imb)
-    cv.imshow('t',img3)
-    cv.waitKey()
+    img=cv.imread(r'C:\Users\Pradhyuman Pandey\Downloads\LOC\LOC4.0_Dynamic-Developers\img_enhancer_module\test.jpeg')
+    img2=filter1(cv.cvtColor(img,cv.COLOR_BGR2RGB),2)
+    # removeBack(r'C:\Users\Pradhyuman Pandey\Downloads\LOC\LOC4.0_Dynamic-Developers\img_enhancer_module\test.jpeg','no-back.png')
+    imt=cv.imread('no-back.png')
+    img2=mergeWithFilter(imt,img2)
+        
+    cv.imwrite('XfilterNEG.jpg',img2)
 
     # removeBack(r'C:\Users\Pradhyuman Pandey\Downloads\LOC\LOC4.0_Dynamic-Developers\img_enhancer_module\test.jpeg')
     # AutoEnhance(cv.cvtColor(img2,cv.COLOR_RGB2BGR))
