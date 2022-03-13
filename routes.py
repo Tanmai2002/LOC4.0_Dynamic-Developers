@@ -59,6 +59,12 @@ def filters():
     return render_template('demopg/filters.html', title='Filters',test1='images/test0.jpg')
 
 @app.route('/')
+@app.route('/effect', methods=['GET','POST'])
+@app.route('/effect')
+def effects():
+    return render_template('demopg/Effects.html', title='Filters',test1='images/test0.jpg')
+
+@app.route('/')
 @app.route('/features', methods=['GET','POST'])
 @app.route('/features')
 def features():
